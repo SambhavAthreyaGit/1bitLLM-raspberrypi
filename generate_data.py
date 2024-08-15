@@ -1,5 +1,5 @@
 from datasets import load_dataset
-import json
+import csv
 
 def process_dataset(dataset):
     formatted_data = []
@@ -19,7 +19,18 @@ def process_dataset(dataset):
 
     return formatted_data
 
+def save_to_csv(data, filename="formatted_command_dataset.csv"):
+    """Save the dataset to a CSV file."""
+    with open(filename, 'w', newline='') as csvfile:
+        fieldnames = ['command', 'description']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        writer.writeheader()
+        for item in data:
+            writer.writerow(item)
+    print(f"Dataset saved to {filename}")
+
 dataset = load_dataset("tmskss/linux-man-pages-tldr-summarized")
 formatted_data = process_dataset(dataset['train'])
-with open('formatted_command_dataset.json', 'w') as f:
-    json.dump(formatted_data, f, indent=2)
+
+save_to_csv(formatted_data)
